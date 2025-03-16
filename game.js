@@ -27,6 +27,7 @@ export class Game {
     this.bird = new Bird(this.canvas);
 
     this.scoreText = new Text(this.ctx, this.score, 50,15);
+
     this.scoreRecord = new Text(this.ctx, this.score, 50,65);
 
     this.buttonText = new Text(this.ctx, 'Restart', this.canvas.width - 120,20);
@@ -44,7 +45,7 @@ export class Game {
   start() {
     this.initializeControls();
 
-    this.scoreRecord = this.getCookie('score')
+    this.scoreRecord = this.getCookie('score');
   
     console.log("score " + this.score);
 
