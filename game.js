@@ -27,6 +27,8 @@ export class Game {
     this.bird = new Bird(this.canvas);
 
     this.scoreText = new Text(this.ctx, this.score, 50,15);
+    this.scoreRecord = new Text(this.ctx, this.score, 50,65);
+
     this.buttonText = new Text(this.ctx, 'Restart', this.canvas.width - 120,20);
   }
 
@@ -42,7 +44,8 @@ export class Game {
   start() {
     this.initializeControls();
 
-    this.score = this.getCookie('score')
+    this.scoreRecord = this.getCookie('score')
+  
     console.log("score " + this.score);
 
     this.intervalId = setInterval(() => this.draw(), 10);
@@ -108,6 +111,8 @@ export class Game {
       this.update(); //обновление логики
 
       this.scoreText = new Text(this.ctx, this.score, 50,15);
+      this.scoreRecord = new Text(this.ctx, this.getCookie('score'), 50,65);
+
       this.buttonText = new Text(this.ctx, 'Restart', this.canvas.width - 120,20);
 }
 
@@ -118,8 +123,9 @@ export class Game {
 		this.pipes = [new Pipe(this.canvas)];
 		this.ground = new Ground(this.canvas);
 
-    this.setCookie('score', this.score, {secure: true, 'max-score': 3600});
-    console.log("score " + this.score )
+    if(this.score > this.getCookie('score')){
+      this.setCookie('score', this.score, {secure: true, 'max-score': 3600});
+    } 
 
 		this.score = 0;
 		this.frameCount = 0;
