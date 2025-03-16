@@ -12,6 +12,7 @@ export class Game {
 
   frameCount = 0;
   score = 0;
+  scoreRecord = 0;
   isGameStarted = false;
 
   constructor(canvas) {
@@ -28,7 +29,8 @@ export class Game {
 
     this.scoreText = new Text(this.ctx, this.score, 50,15);
 
-    this.scoreRecord = new Text(this.ctx, this.score, 50,65);
+    this.scoreRecord = this.getCookie('score');
+    this.scoreRecordText = new Text(this.ctx, this.scoreRecord, 50,65);
 
     this.buttonText = new Text(this.ctx, 'Restart', this.canvas.width - 120,20);
   }
@@ -44,11 +46,6 @@ export class Game {
 
   start() {
     this.initializeControls();
-
-    this.scoreRecord = this.getCookie('score');
-  
-    console.log("score " + this.score);
-
     this.intervalId = setInterval(() => this.draw(), 10);
   
     this.canvas.addEventListener('click', (e) => {
@@ -112,7 +109,8 @@ export class Game {
       this.update(); //обновление логики
 
       this.scoreText = new Text(this.ctx, this.score, 50,15);
-      this.scoreRecord = new Text(this.ctx, this.getCookie('score'), 50,65);
+
+      this.scoreRecordText = new Text(this.ctx, this.scoreRecord, 50,65);
 
       this.buttonText = new Text(this.ctx, 'Restart', this.canvas.width - 120,20);
 }
@@ -124,6 +122,7 @@ export class Game {
 		this.pipes = [new Pipe(this.canvas)];
 		this.ground = new Ground(this.canvas);
 
+    // сохранение рекорда в куки
     if(this.score > this.getCookie('score')){
       this.setCookie('score', this.score, {secure: true, 'max-score': 3600});
     } 
@@ -133,8 +132,6 @@ export class Game {
 		this.k = 3.5;
 		this.DISTANCE_BETWEEN_PIPES = this.k * Pipe.width;
 		this.SPEED = 3;
-
-    
   }
 
   updatePipes() {
@@ -164,13 +161,14 @@ export class Game {
     this.bird.flap();
   }  
 
+  // возвращает score из куки
 getCookie(name) {
   let matches = document.cookie.match(new RegExp(
     "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
   ));
   return matches ? decodeURIComponent(matches[1]) : undefined;
 }
-
+  // сохранение Score в куки
   setCookie(name, value, options = {}) {
     options = {
       path: '/',
