@@ -7,8 +7,8 @@ export class Bird {
   hitboxWidth = 55;
   hitboxHeight = 35;
 
-  flapPower = 5.3; // Сила взмаха крыльев
-  gravity = 0.21;   // Гравитация
+  flapPower = 5.7; // Сила взмаха крыльев
+  gravity = 0.25;   // Гравитация
 
   static async preloadImage() {
     Bird.birdImg = new Image();

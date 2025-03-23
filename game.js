@@ -10,8 +10,8 @@ import { Button } from './button.js';
 // https://hunterd-levelmax.github.io/fb.github.io/
 
 export class Game {
-  SPEED = 3;
-  k = 5;
+  SPEED = 1.8;
+  k = 2.8;
   DISTANCE_BETWEEN_PIPES = this.k * Pipe.width;
 
   frameCount = 0;
@@ -141,9 +141,9 @@ restartGame() {
 
   this.score = 0;
   this.frameCount = 0;
-  this.k = 3.5;
+  this.k = 2.8;
   this.DISTANCE_BETWEEN_PIPES = this.k * Pipe.width;
-  this.SPEED = 3;
+  this.SPEED = 1.8;
 }
 
   updatePipes() {
