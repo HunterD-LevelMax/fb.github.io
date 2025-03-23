@@ -27,12 +27,12 @@ export class Game {
     this.ground = new Ground(this.canvas);
     this.bird = new Bird(this.canvas);
 
-    this.scoreText = new Text(this.ctx, this.score, 50,15);
+    this.scoreText = new Text(this.ctx, this.score, 50, 15);
 
-    this.scoreRecord = this.getCookie('score');
-    this.scoreRecordText = new Text(this.ctx, this.scoreRecord, 50,65);
+    this.scoreRecord = parseInt(this.getCookie('score')) || 0; // Убедитесь, что это число
+    this.scoreRecordText = new Text(this.ctx, this.scoreRecord, 50, 65);
 
-    this.buttonText = new Text(this.ctx, 'Restart', this.canvas.width - 120,20);
+    this.buttonText = new Text(this.ctx, 'Restart', this.canvas.width - 120, 20);
   }
 
   async loadAssets() {
@@ -43,11 +43,14 @@ export class Game {
       Bird.preloadImage()
     ]);
   }
-
+ 
   start() {
     this.initializeControls();
     this.intervalId = setInterval(() => this.draw(), 10);
-  
+
+    this.scoreRecord = this.getCookie('score');
+    this.scoreRecordText = new Text(this.ctx, this.scoreRecord, 50,65);
+
     this.canvas.addEventListener('click', (e) => {
         const rect = this.canvas.getBoundingClientRect(); // Получаем позицию канваса на странице
         const x = e.clientX - rect.left; // Координата X относительно канваса
@@ -115,24 +118,25 @@ export class Game {
       this.buttonText = new Text(this.ctx, 'Restart', this.canvas.width - 120,20);
 }
 
-  restartGame(){
-    clearInterval(this.intervalId);
-    this.intervalId = setInterval(() => this.draw(), 10);
-		this.bird = new Bird(this.canvas);
-		this.pipes = [new Pipe(this.canvas)];
-		this.ground = new Ground(this.canvas);
+restartGame() {
+  clearInterval(this.intervalId);
+  this.intervalId = setInterval(() => this.draw(), 10);
+  this.bird = new Bird(this.canvas);
+  this.pipes = [new Pipe(this.canvas)];
+  this.ground = new Ground(this.canvas);
 
-    // сохранение рекорда в куки
-    if(this.score > this.getCookie('score')){
-      this.setCookie('score', this.score, {secure: true, 'max-score': 3600});
-    } 
-
-		this.score = 0;
-		this.frameCount = 0;
-		this.k = 3.5;
-		this.DISTANCE_BETWEEN_PIPES = this.k * Pipe.width;
-		this.SPEED = 3;
+  // сохранение рекорда в куки
+  if (this.score > this.scoreRecord) {
+    this.scoreRecord = this.score;
+    this.setCookie('score', this.scoreRecord, { secure: true, 'max-age': 3600 });
   }
+
+  this.score = 0;
+  this.frameCount = 0;
+  this.k = 3.5;
+  this.DISTANCE_BETWEEN_PIPES = this.k * Pipe.width;
+  this.SPEED = 3;
+}
 
   updatePipes() {
     for (let i = 0; i < this.pipes.length; i++) {
@@ -162,12 +166,13 @@ export class Game {
   }  
 
   // возвращает score из куки
-getCookie(name) {
-  let matches = document.cookie.match(new RegExp(
-    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-  ));
-  return matches ? decodeURIComponent(matches[1]) : undefined;
-}
+  getCookie(name) {
+    let matches = document.cookie.match(new RegExp(
+      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : 0; // Возвращаем 0, если куки не найдены
+  }
+  
   // сохранение Score в куки
   setCookie(name, value, options = {}) {
     options = {
@@ -175,13 +180,13 @@ getCookie(name) {
       // при необходимости добавьте другие значения по умолчанию
       ...options
     };
-  
+
     if (options.expires instanceof Date) {
       options.expires = options.expires.toUTCString();
     }
-  
+
     let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
-  
+
     for (let optionKey in options) {
       updatedCookie += "; " + optionKey;
       let optionValue = options[optionKey];
@@ -189,7 +194,7 @@ getCookie(name) {
         updatedCookie += "=" + optionValue;
       }
     }
-  
+
     document.cookie = updatedCookie;
   }
 
