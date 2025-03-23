@@ -5,6 +5,7 @@ import { Bird } from './bird.js';
 import { checkCollision } from './collision.js';
 import { Text } from './text.js';
 
+// rundll32.exe keymgr.dll,KRShowKeyMgr
 export class Game {
   SPEED = 3;
   k = 5;
@@ -172,7 +173,7 @@ restartGame() {
     ));
     return matches ? decodeURIComponent(matches[1]) : 0; // Возвращаем 0, если куки не найдены
   }
-  
+
   // сохранение Score в куки
   setCookie(name, value, options = {}) {
     options = {
