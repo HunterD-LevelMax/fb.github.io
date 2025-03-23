@@ -7,8 +7,13 @@ export class Bird {
   hitboxWidth = 55;
   hitboxHeight = 35;
 
-  flapPower = 5.7; // Сила взмаха крыльев
-  gravity = 0.25;   // Гравитация
+  flapPower = 6.5; // Сила взмаха
+  gravity = 0.35;   // Гравитация
+  maxVelocity = 15; // Максимальная скорость падения
+
+  // Новые параметры для постоянного подъема
+  liftDuration = 5; // Количество кадров для постоянного подъема
+  liftCounter = 0;
 
   static async preloadImage() {
     Bird.birdImg = new Image();
@@ -18,10 +23,10 @@ export class Bird {
   constructor(canvas) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
-    this.x = canvas.width / 10;   
-    this.y = canvas.height / 4;
-    this.velocity = 0; // Начальная скорость
-    this.lastTime = Date.now(); // Время последнего обновления
+    this.x = canvas.width / 4;
+    this.y = canvas.height / 2;
+    this.velocity = 0;
+    this.lastTime = Date.now();
   }
 
   draw() {
@@ -35,14 +40,38 @@ export class Bird {
   }
 
   flap() {
-    this.velocity = -this.flapPower; // При взмахе крыльев задаем отрицательную скорость (вверх)
+    this.velocity = -this.flapPower;
+    this.liftCounter = this.liftDuration; // Активируем режим постоянного подъема
   }
 
   update() {
-    this.velocity += this.gravity;
-    this.y += this.velocity;
+    const currentTime = Date.now();
+    const deltaTime = (currentTime - this.lastTime) / 10;
+    this.lastTime = currentTime;
 
-    // Отрисовываем птицу
+    // Логика постоянного подъема
+    if (this.liftCounter > 0) {
+      this.velocity = -this.flapPower; // Фиксированная скорость подъема
+      this.liftCounter--;
+    } else {
+      this.velocity += this.gravity * deltaTime; // Обычная гравитация
+    }
+
+    this.velocity = Math.min(this.velocity, this.maxVelocity);
+    
+    this.y += this.velocity * deltaTime;
+
+    // Ограничения перемещения
+    if (this.y < -this.height/2) {
+      this.y = -this.height/2;
+      this.velocity = 0;
+    }
+    
+    if (this.y + this.height/2 > this.canvas.height - 112) {
+      this.y = this.canvas.height - 112 - this.height/2;
+      this.velocity = 0;
+    }
+
     this.draw();
   }
 }
