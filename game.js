@@ -8,6 +8,7 @@ import { Button } from './button.js';
 
 // rundll32.exe keymgr.dll,KRShowKeyMgr
 // https://hunterd-levelmax.github.io/fb.github.io/
+
 export class Game {
   SPEED = 3;
   k = 5;

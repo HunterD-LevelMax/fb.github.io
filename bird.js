@@ -6,9 +6,9 @@ export class Bird {
   height = 47;
   hitboxWidth = 55;
   hitboxHeight = 35;
-  flapPower = 6.3; // Сила взмаха крыльев
-  gravity = 0.31;   // Гравитация
-  maxVelocity = 16; // Максимальная скорость падения/подъема
+
+  flapPower = 5.3; // Сила взмаха крыльев
+  gravity = 0.21;   // Гравитация
 
   static async preloadImage() {
     Bird.birdImg = new Image();
@@ -39,19 +39,8 @@ export class Bird {
   }
 
   update() {
-    const currentTime = Date.now();
-    const deltaTime = (currentTime - this.lastTime) / 16; // Нормализуем время (16ms ~ 60 FPS)
-    this.lastTime = currentTime;
-
-    // Применяем гравитацию с учетом времени
-    this.velocity += this.gravity * deltaTime;
-
-    // Ограничиваем скорость, чтобы птица не падала/поднималась слишком быстро
-    this.velocity = Math.min(this.velocity, this.maxVelocity);
-    this.velocity = Math.max(this.velocity, -this.maxVelocity);
-
-    // Обновляем позицию птицы с учетом скорости и времени
-    this.y += this.velocity * deltaTime;
+    this.velocity += this.gravity;
+    this.y += this.velocity;
 
     // Отрисовываем птицу
     this.draw();
