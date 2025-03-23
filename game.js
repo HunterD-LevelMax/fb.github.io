@@ -4,8 +4,10 @@ import { Ground } from './ground.js';
 import { Bird } from './bird.js';
 import { checkCollision } from './collision.js';
 import { Text } from './text.js';
+import { Button } from './button.js';
 
 // rundll32.exe keymgr.dll,KRShowKeyMgr
+
 export class Game {
   SPEED = 3;
   k = 5;
@@ -28,10 +30,13 @@ export class Game {
     this.ground = new Ground(this.canvas);
     this.bird = new Bird(this.canvas);
 
-    this.scoreText = new Text(this.ctx, this.score, 50, 15);
+    this.button = new Button(this.canvas);
 
-    this.scoreRecord = parseInt(this.getCookie('score')) || 0; // Убедитесь, что это число
-    this.scoreRecordText = new Text(this.ctx, this.scoreRecord, 50, 65);
+    this.scoreText = new Text(this.ctx, this.score, this.canvas.width / 2, 65);
+
+    this.scoreRecord = parseInt(this.getCookie('score')) || 0;
+
+    this.scoreRecordText = new Text(this.ctx, this.scoreRecord, 50, 15);
 
     this.buttonText = new Text(this.ctx, 'Restart', this.canvas.width - 120, 20);
   }
@@ -41,7 +46,8 @@ export class Game {
       loadImage(this.BG_IMG, './assets/bg.png'),
       Pipe.preloadImages(),
       Ground.preloadImage(),
-      Bird.preloadImage()
+      Bird.preloadImage(),
+      Button.preloadImage()
     ]);
   }
  
@@ -112,11 +118,11 @@ export class Game {
       
       this.update(); //обновление логики
 
-      this.scoreText = new Text(this.ctx, this.score, 50,15);
+      this.scoreText = new Text(this.ctx, this.score, this.canvas.width / 2, 65);
+      this.scoreRecordText = new Text(this.ctx, this.scoreRecord, 50, 15);
+      this.button.draw()
+    //  this.buttonText = new Text(this.ctx, 'Restart', this.canvas.width - 120,20);
 
-      this.scoreRecordText = new Text(this.ctx, this.scoreRecord, 50,65);
-
-      this.buttonText = new Text(this.ctx, 'Restart', this.canvas.width - 120,20);
 }
 
 restartGame() {
