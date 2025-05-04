@@ -32,13 +32,9 @@ export class Game {
     this.bird = new Bird(this.canvas);
 
     this.button = new Button(this.canvas);
-
     this.scoreText = new Text(this.ctx, this.score, this.canvas.width / 2, 65);
-
     this.scoreRecord = parseInt(this.getCookie('score')) || 0;
-
     this.scoreRecordText = new Text(this.ctx, this.scoreRecord, 50, 15);
-
     this.buttonText = new Text(this.ctx, 'Restart', this.canvas.width - 120, 20);
   }
 
@@ -76,7 +72,6 @@ export class Game {
         }
     });
 }
-
 
   stop() {
     clearInterval(this.intervalId);
@@ -123,7 +118,6 @@ export class Game {
       this.scoreRecordText = new Text(this.ctx, this.scoreRecord, 50, 15);
       this.button.draw()
     //  this.buttonText = new Text(this.ctx, 'Restart', this.canvas.width - 120,20);
-
 }
 
 restartGame() {
@@ -170,6 +164,7 @@ restartGame() {
   handleFlap = (event) => {
     if (event.type === 'keydown' && event.code !== 'Space') return;
     if (!this.isGameStarted) this.isGameStarted = true;
+    this.bird.lastTime = Date.now();
     this.bird.flap();
   }  
 
